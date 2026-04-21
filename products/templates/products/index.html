@@ -1,0 +1,371 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ashley's Digital Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green:  #00C853;
+      --black:  #0A0A0A;
+      --cream:  #F5F0E8;
+      --accent: #FF6B35;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--black);
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .syne { font-family: 'Syne', sans-serif; }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+    }
+
+    /* ── HERO TICKER ── */
+    .ticker-wrap { overflow: hidden; background: var(--green); padding: 10px 0; }
+    .ticker-track {
+      display: flex; gap: 3rem;
+      animation: ticker 18s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-track span {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 0.75rem; letter-spacing: 0.15em;
+      color: var(--black); text-transform: uppercase;
+    }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* ── HEADER ── */
+    header {
+      position: relative; z-index: 10;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.5rem 2.5rem;
+      border-bottom: 1px solid rgba(245,240,232,0.08);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.25rem;
+      letter-spacing: -0.03em;
+    }
+    .logo span { color: var(--green); }
+    nav a {
+      color: rgba(245,240,232,0.55); text-decoration: none;
+      font-size: 0.85rem; margin-left: 2rem; letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--cream); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; z-index: 1;
+      padding: 5rem 2.5rem 3rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    }
+    .hero-eyebrow {
+      font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 800;
+      line-height: 1.0; letter-spacing: -0.03em;
+    }
+    .hero h1 em { font-style: normal; color: var(--green); }
+    .hero-sub {
+      margin-top: 1.5rem; font-size: 1rem; color: rgba(245,240,232,0.6);
+      line-height: 1.65; max-width: 400px;
+    }
+    .hero-stat {
+      margin-top: 2.5rem; display: flex; gap: 2.5rem;
+    }
+    .hero-stat div { display: flex; flex-direction: column; }
+    .hero-stat .num {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 2rem;
+      color: var(--cream);
+    }
+    .hero-stat .lbl {
+      font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(245,240,232,0.4);
+    }
+    .hero-right {
+      display: flex; justify-content: flex-end; align-items: center;
+    }
+    .hero-badge {
+      width: 200px; height: 200px; border-radius: 50%;
+      border: 1px solid var(--green);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 1.5rem;
+      animation: spin-slow 25s linear infinite;
+    }
+    .hero-badge .big { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--green); }
+    .hero-badge .small { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245,240,232,0.5); margin-top: 0.25rem; }
+    @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* ── DIVIDER ── */
+    .divider {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0 2.5rem; margin: 0.5rem 0 2.5rem;
+    }
+    .divider-line { flex: 1; height: 1px; background: rgba(245,240,232,0.1); }
+    .divider-text { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.3); }
+
+    /* ── PRODUCT GRID ── */
+    .products-section { position: relative; z-index: 1; padding: 0 2.5rem 5rem; }
+    .section-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 2rem;
+    }
+    .section-title { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(245,240,232,0.4); }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5px;
+      border: 1.5px solid rgba(245,240,232,0.08);
+    }
+
+    .product-card {
+      background: #111;
+      border: 1.5px solid rgba(245,240,232,0.06);
+      overflow: hidden;
+      position: relative;
+      transition: border-color 0.3s, background 0.3s;
+      cursor: pointer;
+    }
+    .product-card:hover {
+      border-color: var(--green);
+      background: #141414;
+      z-index: 2;
+    }
+    .product-card:hover .card-img-wrap img { transform: scale(1.04); }
+
+    .card-img-wrap {
+      aspect-ratio: 4/3; overflow: hidden;
+      background: #1a1a1a;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .card-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+    }
+    .card-img-placeholder svg { opacity: 0.15; }
+
+    .card-body { padding: 1.5rem; }
+    .card-name {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem;
+      letter-spacing: -0.01em; line-height: 1.25; margin-bottom: 0.5rem;
+    }
+    .card-desc {
+      font-size: 0.82rem; color: rgba(245,240,232,0.45);
+      line-height: 1.55; margin-bottom: 1.25rem;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .card-price {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.35rem;
+      color: var(--green);
+    }
+
+    /* Payment badges */
+    .payment-badges { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 1rem 0; }
+    .badge {
+      padding: 0.2rem 0.55rem;
+      font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+      border-radius: 2px;
+      border: 1px solid rgba(245,240,232,0.15);
+      color: rgba(245,240,232,0.5);
+    }
+    .badge.mpesa { border-color: #4CAF50; color: #4CAF50; }
+    .badge.paypal { border-color: #0070BA; color: #60a5fa; }
+    .badge.card { border-color: rgba(245,240,232,0.3); color: rgba(245,240,232,0.6); }
+
+    /* CTA Button */
+    .btn-buy {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      background: var(--green); color: var(--black);
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-buy:hover { background: #00e564; transform: translateY(-1px); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center; padding: 6rem 2rem;
+      border: 1px dashed rgba(245,240,232,0.1);
+    }
+    .empty-state p { color: rgba(245,240,232,0.35); font-size: 0.9rem; margin-top: 0.75rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid rgba(245,240,232,0.08);
+      padding: 2rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    footer .copy { font-size: 0.75rem; color: rgba(245,240,232,0.25); }
+    footer .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1.25rem 2rem; }
+      .hero-right { justify-content: flex-start; }
+      header { padding: 1.25rem; }
+      nav { display: none; }
+      .products-section { padding: 0 1.25rem 3rem; }
+      .divider { padding: 0 1.25rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    {% for _ in "123456" %}
+      <span>✦ Digital Products</span>
+      <span>✦ M-Pesa Accepted</span>
+      <span>✦ Instant Download</span>
+      <span>✦ Built in Nairobi</span>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">Ashley<span>.</span>Store</div>
+  <nav>
+    <a href="#">Products</a>
+    <a href="mailto:your@email.com">Contact</a>
+    <a href="/admin" style="color:var(--green);">Admin ↗</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-eyebrow">✦ Digital Products — Nairobi, Kenya</div>
+    <h1>Tools that<br/>actually <em>work.</em></h1>
+    <p class="hero-sub">
+      Hand-built digital products for students and entrepreneurs.
+      Download instantly. Pay via M-Pesa or card.
+    </p>
+    <div class="hero-stat">
+      <div>
+        <span class="num">{{ products.count }}</span>
+        <span class="lbl">Products</span>
+      </div>
+      <div>
+        <span class="num">KSh</span>
+        <span class="lbl">Prices from 500</span>
+      </div>
+      <div>
+        <span class="num">⚡</span>
+        <span class="lbl">Instant delivery</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-badge">
+      <div class="big">100%</div>
+      <div class="small">Digital &<br/>Downloadable</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-text">Available now</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="products-section">
+  <div class="section-header">
+    <span class="section-title">All Products — {{ products.count }} listed</span>
+  </div>
+
+  {% if products %}
+  <div class="products-grid">
+    {% for product in products %}
+    <div class="product-card">
+      <!-- Image -->
+      <div class="card-img-wrap">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy" />
+        {% else %}
+          <div class="card-img-placeholder">
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Body -->
+      <div class="card-body">
+        <div class="card-name">{{ product.name }}</div>
+        {% if product.description %}
+          <div class="card-desc">{{ product.description }}</div>
+        {% endif %}
+
+        <!-- Payment badges -->
+        {% if product.payment_methods %}
+        <div class="payment-badges">
+          {% for method in product.payment_methods %}
+            <span class="badge {{ method }}">{{ method }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Footer: price + CTA -->
+        <div class="card-footer">
+          <div class="card-price">{{ product.formatted_price }}</div>
+          <a href="mailto:your@email.com?subject=Order: {{ product.name }}" class="btn-buy">
+            Buy Now →
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="empty-state">
+    <div class="syne" style="font-size:2rem; opacity:0.2;">∅</div>
+    <p>No products yet. Add them via the <a href="/admin" style="color:var(--green);">admin panel</a>.</p>
+  </div>
+  {% endif %}
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="copy">© 2025 Ashley Digital Store — Nairobi, Kenya</div>
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <div class="dot"></div>
+    <span style="font-size:0.72rem;color:rgba(245,240,232,0.3);">Live</span>
+  </div>
+</footer>
+
+</body>
+</html>
